@@ -34,8 +34,11 @@ pipeline {
         }
         
         stage('Deploy to Test') {
-            when {
-                branch 'dev'
+          when {
+                anyOf {
+                    branch 'dev'
+                    branch 'main'
+                }
             }
             steps {
                 // Copy WAR file to EC2 test server
@@ -49,9 +52,12 @@ pipeline {
         }
         
         stage('Deploy to Production') {
-            when {
+                 when {
+            anyOf {
                 branch 'dev'
+                branch 'main'
             }
+        }
             steps {
                 // Production deployment requires manual approval
                 input 'Deploy to production?'
@@ -78,4 +84,4 @@ pipeline {
             cleanWs()
         }
     }
-}
+} 
