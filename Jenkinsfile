@@ -41,8 +41,8 @@ pipeline {
                 // Copy WAR file to EC2 test server
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
                     sh '''
-                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@TEST_EC2_IP:/tmp/
-                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@TEST_EC2_IP 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
+                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
+                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
                     '''
                 }
             }
@@ -59,8 +59,8 @@ pipeline {
                 // Copy WAR file to EC2 production server
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
                     sh '''
-                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@PROD_EC2_IP:/tmp/
-                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@PROD_EC2_IP 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
+                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
+                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
                     '''
                 }
             }
