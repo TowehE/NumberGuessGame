@@ -34,12 +34,7 @@ pipeline {
         }
         
         stage('Deploy to Test') {
-          when {
-                anyOf {
-                    branch 'dev'
-                    branch 'main'
-                }
-            }
+            // Removed branch conditions
             steps {
                 // Copy WAR file to EC2 test server
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
@@ -52,17 +47,9 @@ pipeline {
         }
         
         stage('Deploy to Production') {
-                 when {
-            anyOf {
-                branch 'dev'
-                branch 'main'
-            }
-        }
+            // Removed branch conditions and manual approval
             steps {
-                // Production deployment requires manual approval
-                input 'Deploy to production?'
-                
-                // Copy WAR file to EC2 production server
+                // Copy WAR file to EC2 production server - no input step
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
                     sh """
                         scp -i \$keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
@@ -84,4 +71,4 @@ pipeline {
             cleanWs()
         }
     }
-} 
+}
