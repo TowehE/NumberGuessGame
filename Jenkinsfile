@@ -22,7 +22,7 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
-                junit '**/target/surefire-reports/*.xml'
+                junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
             }
         }
         
@@ -35,22 +35,22 @@ pipeline {
         
         stage('Deploy to Test') {
             when {
-                branch 'develop'
+                branch 'dev'
             }
             steps {
                 // Copy WAR file to EC2 test server
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
-                    sh '''
-                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
-                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
-                    '''
+                    sh """
+                        scp -i \$keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
+                        ssh -i \$keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war ~/apache-tomcat-7.0.94/webapps/ && sudo ~/apache-tomcat-7.0.94/bin/shutdown.sh && sleep 5 && sudo ~/apache-tomcat-7.0.94/bin/startup.sh'
+                    """
                 }
             }
         }
         
         stage('Deploy to Production') {
             when {
-                branch 'main'
+                branch 'dev'
             }
             steps {
                 // Production deployment requires manual approval
@@ -58,10 +58,10 @@ pipeline {
                 
                 // Copy WAR file to EC2 production server
                 withCredentials([sshUserPrivateKey(credentialsId: 'ec2-ssh-key', keyFileVariable: 'keyfile')]) {
-                    sh '''
-                        scp -i $keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
-                        ssh -i $keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war /opt/tomcat/webapps/ && sudo /opt/tomcat/bin/shutdown.sh && sleep 5 && sudo /opt/tomcat/bin/startup.sh'
-                    '''
+                    sh """
+                        scp -i \$keyfile -o StrictHostKeyChecking=no target/NumberGuessGame.war ec2-user@52.87.206.58:/tmp/
+                        ssh -i \$keyfile -o StrictHostKeyChecking=no ec2-user@52.87.206.58 'sudo cp /tmp/NumberGuessGame.war ~/apache-tomcat-7.0.94/webapps/ && sudo ~/apache-tomcat-7.0.94/bin/shutdown.sh && sleep 5 && sudo ~/apache-tomcat-7.0.94/bin/startup.sh'
+                    """
                 }
             }
         }
@@ -78,4 +78,4 @@ pipeline {
             cleanWs()
         }
     }
-}
+} 
