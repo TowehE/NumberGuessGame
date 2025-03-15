@@ -35,7 +35,7 @@ pipeline {
         
         stage('Deploy to Test') {
             when {
-                branch 'develop'
+                branch 'dev'
             }
             steps {
                 // Copy WAR file to EC2 test server
@@ -50,7 +50,7 @@ pipeline {
         
         stage('Deploy to Production') {
             when {
-                branch 'main'
+                branch 'dev'
             }
             steps {
                 // Production deployment requires manual approval
