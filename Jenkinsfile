@@ -499,7 +499,7 @@ EOF
                             # Update Tomcat startup script
                             sudo sed -i "s/JAVA_OPTS=\\"\\\$JAVA_OPTS/JAVA_OPTS=\\"\\\$JAVA_OPTS -javaagent:${TOMCAT_PROD_PATH//\//\\/}\\/monitoring\\/jmx_prometheus_javaagent-0.16.1.jar=9404:${TOMCAT_PROD_PATH//\//\\/}\\/monitoring\\/jmx-config.yml/" ${TOMCAT_PROD_PATH}/bin/catalina.sh
                             
-                            # Restart Tomcat to apply changes
+                             // Restart Tomcat to apply changes
                             sudo ${TOMCAT_PROD_PATH}/bin/shutdown.sh
                             sleep 10
                             sudo ${TOMCAT_PROD_PATH}/bin/startup.sh
